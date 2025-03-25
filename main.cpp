@@ -9,7 +9,7 @@
 
 #define MaxUser 100 //定义最大 MDF 主目录文件
 #define MaxDisk 512*1024 //模拟最大磁盘空间
-#define commandAmount 12 //对文件操作的指令数
+#define commandAmount 13 //对文件操作的指令数
 //存储空间管理有关结构体和变量
 char disk[MaxDisk]; //模拟 512K 的磁盘存储空间
 typedef struct distTable //磁盘块结构体
@@ -63,6 +63,7 @@ int requestDist(int& startPostion, int maxLength); //磁盘分配查询
 void initDisk(); //初始化磁盘
 void freeDisk(int startPostion); //磁盘空间释放
 void diskShow(); //显示磁盘使用情况
+void fileOpen(char fileName[]); //打开文件
 
 //用户管理
 void userCreate();
@@ -87,6 +88,7 @@ int main() {
     strcpy(order[9], "return");
     strcpy(order[10], "exit");
     strcpy(order[11], "df");
+    strcpy(order[12], "open");
     char command[100], command_str1[10], command_str2[10], command_str3[5], command_str4[3];
     int i, k, j;
     int length;
@@ -119,8 +121,10 @@ int main() {
             printf(" dir-显示文件 格式：dir aaa,将显示 aaa 用户的所有文件\n");
             printf(" df-显示磁盘空间使用情况 格式：df\n");
             printf(" close-关闭文件 格式：close a1,将关闭文件 a1\n");
+            printf(" open-打开文件 格式：open a1,将打开文件 a1\n");
             printf(" return-退出用户，返回登录界面\n");
             printf(" exit-退出程序\n");
+
             printf("————————————————————————————————————————\n");
             printf("please imput your command:>");
             std::cin.getline(command,100);
@@ -207,6 +211,9 @@ int main() {
                     break;
                 case 11:
                     diskShow();
+                    break;
+                case 12:
+                    fileOpen(command_str2);
                     break;
             }
         }
@@ -440,7 +447,12 @@ void fileCat(char fileName[]) {
     if (p) {
         startPos = p->file->strat;
         length = p->file->length;
-        p->file->openFlag = true;    //文件打开标记
+        if (p->file->openFlag == false){
+            printf("文件未被打开,请先打开文件再读取\n");
+            sleep(1);
+            return;
+        }
+
 
         printf("*****************************************************\n");
         //for(int i=startPos;k<length;i++,k++)
@@ -478,12 +490,17 @@ void fileWrite(char fileName[]) {
             sleep(1);//system("pause");
             return;
         }
+        if (p->file->openFlag == false){
+            printf("文件未被打开,请先打开文件再读取\n");
+            sleep(1);
+            return;
+        }
         char str[500];
         printf("please input content:\n");
         //gets(str);
         scanf("%s",str);
         startPos=p->file->strat;
-        p->file->openFlag=true;    //文件打开标记
+
         p->file->length=strlen(str);
         if(p->file->length>p->file->maxlength)
         {
@@ -644,9 +661,43 @@ void fileClose(char fileName[])
             break;
     }
     if(p)
-    {   p->file->openFlag=false;
-        printf("%s文件已关闭\n",p->file->fileName);
+    {
+        if (p->file->openFlag== false){
+            printf("%s文件未被打开(已被关闭)\n",p->file->fileName);
+            sleep(1);//system("pause");
+        } else{
+            p->file->openFlag=false;
+            printf("%s文件已关闭\n",p->file->fileName);
+            sleep(1);//system("pause");
+        }
+    }
+    else
+    {
+        printf("没有找到该文件,请检查输入的文件名是否正确\n");
         sleep(1);//system("pause");
+    }
+}
+
+void fileOpen(char fileName[]){
+    UFD *p,*q;
+    q=userTable[userID].user;
+    for(p=q->next;p!=NULL;p=p->next)
+    {
+        if(!strcmp(p->file->fileName,fileName))
+            break;
+    }
+    if(p)
+    {
+        if (p->file->openFlag== true){
+            printf("%s文件未被关闭(已被打开)\n",p->file->fileName);
+            sleep(1);//system("pause");
+        }
+        else{
+            p->file->openFlag= true;
+            printf("%s文件已打开\n",p->file->fileName);
+            sleep(1);//system("pause");
+        }
+
     }
     else
     {
