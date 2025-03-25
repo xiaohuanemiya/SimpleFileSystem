@@ -1,0 +1,3 @@
+/cygdrive/e/jetbrain-code/ClionProject/system/cmake-build-debug-cygwin/CMakeFiles/system.dir
+/cygdrive/e/jetbrain-code/ClionProject/system/cmake-build-debug-cygwin/CMakeFiles/edit_cache.dir
+/cygdrive/e/jetbrain-code/ClionProject/system/cmake-build-debug-cygwin/CMakeFiles/rebuild_cache.dir
