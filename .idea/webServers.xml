@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f2317033-86a3-416e-b59d-1b46b4abf749" name="wsl">
+        <fileTransfer rootFolder="/home/emiya" accessType="SFTP" host="localhost" port="23456" sshConfigId="4dd7e99c-8eee-48eb-80fa-d1aca57ae7e1" sshConfig="emiya@localhost:23456 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

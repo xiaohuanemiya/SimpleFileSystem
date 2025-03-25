@@ -59,7 +59,7 @@ void fileDir(char UserName[]); //显示某一用户的所有文件
 void fileClose(char fileName[]); //关闭已打开的文件
 void fileDel(char fileName[]); //删除文件
 void chmod(char fileName[], char kind[]); //修改文件的读写方式
-int requestDist(int startPostion, int maxLength); //磁盘分配查询
+int requestDist(int& startPostion, int maxLength); //磁盘分配查询
 void initDisk(); //初始化磁盘
 void freeDisk(int startPostion); //磁盘空间释放
 void diskShow(); //显示磁盘使用情况
@@ -72,6 +72,8 @@ int login();
 int userID = -1; //用户登录的 ID 号，值为-1 时表示没有用户登录
 
 int main() {
+    setbuf(stdout, NULL);
+
     char order[commandAmount][10];
     strcpy(order[0], "create");
     strcpy(order[1], "rm");
@@ -99,7 +101,7 @@ int main() {
         printf(" 1、Creat user\n");
         printf(" 2、login\n");
         printf("********************************************\n");
-        printf("Please chooce the function key:>");
+        printf("Please chooce the function key:>\n");
         int choice;
         scanf("%d", &choice);
         if (choice == 1) userCreate();
@@ -159,9 +161,8 @@ int main() {
                     }
                     for (i = k + 1, k = 0; command[i] != ' ' && command[i] != '\0'; i++, k++) {
                         command_str4[k] = command[i];
-                        command_str4[k] = '\0';
                     }
-
+                    command_str4[k] = '\0';
 
                     fileCreate(command_str2, length, command_str4);
                     break;
@@ -321,7 +322,7 @@ void initDisk() {
     diskHead->next = NULL;
 }
 
-int requestDist(int startPostion, int maxLength) {
+int requestDist(int& startPostion, int maxLength) {
     int flag = 0; //标记是否分配成功
     diskNode *p, *q, *temp;
     p = diskHead;
